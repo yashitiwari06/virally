@@ -14,6 +14,10 @@ router
 .route("/login")
 .post(postlogin);
 
+router
+.route("/verify")
+.get(verifyCookie);
+
 async function postsignup(req, res) {
   const userdetails = req.body;
 
@@ -60,7 +64,7 @@ async function postlogin(req,res) {
   if(isMatch) {
     const token = createJwtToken(db_userdetails);
     res.cookie("token",token, {
-      httpOnly: false,
+      httpOnly: true,
       secure: false
     });
     console.log("password matched redirecting to home page");
@@ -73,6 +77,22 @@ async function postlogin(req,res) {
       success : "false",
       message : "Your credentials are wrong",
     })
+  }
+}
+
+async function verifyCookie(req, res) {
+  const token = req.cookies.token;
+  try {
+    const response = await jwt.verify(token,secrectKey);
+    res.json({
+      verify : true,
+      message : "valid user"
+    });
+  } catch(err) {
+    res.json({
+      verify: false,
+      message : "you have to login again"
+    });
   }
 }
 

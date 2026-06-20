@@ -2,33 +2,49 @@ import Header from "./components/Header";
 import Body from "./components/Body";
 import Footer from "./components/Footer";
 import { Outlet, useNavigate } from "react-router-dom";
-import TokenContext from "./uitils/TokenContext";
-import { useContext, useEffect } from "react";
+import UserContext from "./uitils/UserContext";
+import { useContext, useEffect, useState } from "react";
+import useVerifyToken from "./uitils/useVerifyToken";
 
 const App = () => {
-  const { token } = useContext(TokenContext);
+  //const { token } = useContext(TokenContext);
 
   const navigate = useNavigate();
+  const [verificationObject, setVerificationObject] = useState({});
 
   useEffect(() => {
-    if (token.token) {
-      navigate("/");
-    } else {
-      navigate("/signup");
-    }
-  }, [token]);
+    const checkAuth = async () => {
+      const obj = await verifyToken(); // Now obj will be the resolved data, not a promise
+      console.log(obj);
+      
+      if (!obj || !obj.verify) {
+        navigate("/login");
+      } else {
+        setVerificationObject(obj);
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
+
+  async function verifyToken() {
+    const obj = await useVerifyToken();
+    return obj;
+  }
 
   return (
     <>
-      <div className="min-h-screen flex flex-col">
-        <Header />
+      <UserContext.Provider value = {{obj : verificationObject}}>
+        <div className="min-h-screen flex flex-col">
+          <Header />
 
-        <main className="flex-1">
-          <Outlet />
-        </main>
+          <main className="flex-1">
+            <Outlet />
+          </main>
 
-        <Footer />
-      </div>
+          <Footer />
+        </div>
+      </UserContext.Provider>
     </>
   );
 };

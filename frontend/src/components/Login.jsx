@@ -20,8 +20,8 @@ const Login = () => {
 
     const data = await response.json();
     console.log(data);
-    console.log(document.cookie.split("=")[1])
     if(response.ok) {
+      console.log("RESPONSE -> " + response.ok)
       setErrMessage("");
       navigate("/home");
     } else {

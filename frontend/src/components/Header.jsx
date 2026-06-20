@@ -1,19 +1,17 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Virally from "../assets/viral.png"
+import UserContext from "../uitils/UserContext";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [ tokenAvaliable, setTokenAvaliable ] = useState(true);
+  const [ verificationObject, setVerificationObject ] = useState({});
 
-  function getAvailableToken() {
-    const token = localStorage.getItem("token");
-    token ? setTokenAvaliable(true) : setTokenAvaliable(false);
-  }
-
+  const { obj } = useContext(UserContext);
+  console.log("obj" + obj);
   useEffect(() => {
-    getAvailableToken();
-  }, [])
+    setVerificationObject(obj);
+  }, [obj])
 
   return (
     <nav
@@ -31,7 +29,7 @@ const Header = () => {
 
         {/* Menu items */}
         {
-          tokenAvaliable ? (
+          verificationObject.verify ? (
             <div
           id="collapseMenu"
           className={`${
@@ -125,7 +123,7 @@ const Header = () => {
         {/* Login, Signup, MenuCollapse Button */}
         <div className="flex items-center gap-5">
           {
-            tokenAvaliable ? null : (
+            verificationObject.verify ? null : (
               <div>
             <Link
               to="/login"
@@ -144,7 +142,7 @@ const Header = () => {
           }
 
           {
-            tokenAvaliable ? (
+            verificationObject.verify ? (
               <button
             type="button"
             aria-controls="collapseMenu"
