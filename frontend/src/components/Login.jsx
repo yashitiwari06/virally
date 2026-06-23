@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
 import virally from "../assets/viral.png";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import UserContext from "../uitils/UserContext";
+import useVerifyToken from "../uitils/useVerifyToken";
 
 const Login = () => {
   const [errMessage, setErrMessage] = useState("");
 
+  const { setObj } = useContext(UserContext);
 
   const navigate = useNavigate();
   const handleLogin = async(userDetails) => {
@@ -19,11 +22,12 @@ const Login = () => {
     });
 
     const data = await response.json();
-    console.log(data);
     if(response.ok) {
-      console.log("RESPONSE -> " + response.ok)
+      const res = await useVerifyToken();
+      setObj(res);
+
       setErrMessage("");
-      navigate("/home");
+      navigate("/");
     } else {
       setErrMessage(data.message);
     }

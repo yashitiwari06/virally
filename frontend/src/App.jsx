@@ -13,19 +13,21 @@ const App = () => {
   const [verificationObject, setVerificationObject] = useState({});
 
   useEffect(() => {
+    console.log("use effect called");
     const checkAuth = async () => {
       const obj = await verifyToken(); // Now obj will be the resolved data, not a promise
-      console.log(obj);
+      // console.log(obj);
       
       if (!obj || !obj.verify) {
         navigate("/login");
       } else {
         setVerificationObject(obj);
       }
+      console.log(obj);
     };
 
     checkAuth();
-  }, [navigate]);
+  }, []);
 
   async function verifyToken() {
     const obj = await useVerifyToken();
@@ -34,7 +36,7 @@ const App = () => {
 
   return (
     <>
-      <UserContext.Provider value = {{obj : verificationObject}}>
+      <UserContext.Provider value = {{obj : verificationObject, setObj: setVerificationObject}}>
         <div className="min-h-screen flex flex-col">
           <Header />
 

@@ -18,6 +18,10 @@ router
 .route("/verify")
 .get(verifyCookie);
 
+router
+.route("/deleteCookie")
+.get(deleteCookie);
+
 async function postsignup(req, res) {
   const userdetails = req.body;
 
@@ -85,6 +89,7 @@ async function verifyCookie(req, res) {
   try {
     const response = await jwt.verify(token,secrectKey);
     res.json({
+      username : response.username,
       verify : true,
       message : "valid user"
     });
@@ -94,6 +99,11 @@ async function verifyCookie(req, res) {
       message : "you have to login again"
     });
   }
+}
+
+function deleteCookie(req,res) {
+  res.clearCookie("token");
+
 }
 
 function createJwtToken(userdetails) {
